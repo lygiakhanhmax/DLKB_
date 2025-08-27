@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đăng Ký Lịch Khám Bệnh</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- HEADER CHÍNH -->
+    <div class="header">
+        <div class="container">
+            <h1>🏥 Hệ Thống Đăng Ký Lịch Khám Bệnh</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- FORM ĐĂNG NHẬP/ĐĂNG KÝ -->
+        <div id="auth-section" class="form-container">
+            <div class="form-tabs">
+                <button class="tab-button active" onclick="chuyenTab('dangnhap')">Đăng Nhập</button>
+                <button class="tab-button" onclick="chuyenTab('dangky')">Đăng Ký</button>
+            </div>
+
+            <!-- FORM ĐĂNG NHẬP -->
+            <form id="form-dangnhap" class="show">
+                <div class="form-group">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email" name="email" required placeholder="Nhập email của bạn">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mật khẩu:</label>
+                    <input type="password" id="login-password" name="password" required placeholder="Nhập mật khẩu">
+                </div>
+                <button type="submit" class="button" onclick="dangNhap(event)">Đăng Nhập</button>
+            </form>
+
+            <!-- FORM ĐĂNG KÝ -->
+            <form id="form-dangky" style="display: none;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reg-name">Họ và tên:</label>
+                        <input type="text" id="reg-name" name="name" required placeholder="Nhập họ và tên">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-phone">Số điện thoại:</label>
+                        <input type="tel" id="reg-phone" name="phone" required placeholder="Nhập số điện thoại">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email:</label>
+                    <input type="email" id="reg-email" name="email" required placeholder="Nhập email">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reg-password">Mật khẩu:</label>
+                        <input type="password" id="reg-password" name="password" required placeholder="Nhập mật khẩu">
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-confirm">Xác nhận mật khẩu:</label>
+                        <input type="password" id="reg-confirm" name="confirm" required placeholder="Nhập lại mật khẩu">
+                    </div>
+                </div>
+                <button type="submit" class="button" onclick="dangKy(event)">Đăng Ký</button>
+            </form>
+        </div>
+
+        <div id="dashboard" class="dashboard">
+            <!-- SIDEBAR MENU -->
+            <div class="sidebar">
+                <h3>📋 Menu Chính</h3>
+                <ul>
+                    <li><a href="#" class="active" onclick="hienThiNoiDung('dat-lich')">📅 Đặt Lịch Khám</a></li>
+                    <li><a href="#" onclick="hienThiNoiDung('lich-da-dat')">📋 Lịch Đã Đặt</a></li>
+                    <li><a href="#" onclick="hienThiNoiDung('thanh-toan')">💳 Thanh Toán</a></li>
+                    <li><a href="#" onclick="hienThiNoiDung('thong-tin-ca-nhan')">👤 Thông Tin Cá Nhân</a></li>
+                    <li><a href="#" onclick="hienThiNoiDung('lich-su-kham')">📊 Lịch Sử Khám</a></li>
+                    <li><a href="#" onclick="hienThiNoiDung('lien-he')">📞 Liên Hệ</a></li>
+                    <li><a href="#" onclick="dangXuat()">🚪 Đăng Xuất</a></li>
+                </ul>
+            </div>
+
+            <!-- NỘI DUNG CHÍNH -->
+            <div class="main-content">
+                <!-- ĐẶT LỊCH KHÁM -->
+                <div id="dat-lich" class="content-section">
+                    <h2>📅 Đặt Lịch Khám Bệnh</h2>
+                    <form id="form-dat-lich">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="chuyen-khoa">Chuyên khoa:</label>
+                                <select id="chuyen-khoa" required onchange="capNhatDanhSachBacSi()">
+                                    <option value="">-- Chọn chuyên khoa --</option>
+                                    <option value="Nội khoa">🫀 Nội khoa</option>
+                                    <option value="Ngoại khoa">🔪 Ngoại khoa</option>
+                                    <option value="Sản phụ khoa">🤱 Sản phụ khoa</option>
+                                    <option value="Nhi khoa">👶 Nhi khoa</option>
+                                    <option value="Mắt">👁️ Mắt</option>
+                                    <option value="Tai mũi họng">👂 Tai mũi họng</option>
+                                    <option value="Da liễu">🧴 Da liễu</option>
+                                    <option value="Răng hàm mặt">🦷 Răng hàm mặt</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bac-si">Bác sĩ:</label>
+                                <select id="bac-si" required disabled style="opacity: 0.5;">
+                                    <option value="">-- Chọn chuyên khoa trước --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ngay-kham">Ngày khám:</label>
+                                <input type="date" id="ngay-kham" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gio-kham">Giờ khám:</label>
+                                <select id="gio-kham" required>
+                                    <option value="">-- Chọn giờ --</option>
+                                    <option value="08:00">08:00 - 08:30</option>
+                                    <option value="08:30">08:30 - 09:00</option>
+                                    <option value="09:00">09:00 - 09:30</option>
+                                    <option value="09:30">09:30 - 10:00</option>
+                                    <option value="10:00">10:00 - 10:30</option>
+                                    <option value="14:00">14:00 - 14:30</option>
+                                    <option value="14:30">14:30 - 15:00</option>
+                                    <option value="15:00">15:00 - 15:30</option>
+                                    <option value="15:30">15:30 - 16:00</option>
+                                    <option value="16:00">16:00 - 16:30</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ghi-chu">Ghi chú (Triệu chứng):</label>
+                            <textarea id="ghi-chu" rows="4" placeholder="Mô tả triệu chứng hoặc lý do khám bệnh..."></textarea>
+                        </div>
+                        
+                        <!-- BẢNG GIÁ DỊCH VỤ -->
+                        <div class="price-info">
+                            <h4>💰 Chi Phí Khám:</h4>
+                            <div id="gia-kham-info" class="price-display">
+                                <p>Vui lòng chọn chuyên khoa để xem giá</p>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="button" onclick="datLichKham(event)">📅 Đặt Lịch Khám</button>
+                    </form>
+                </div>
+
+                <!-- THANH TOÁN -->
+                <div id="thanh-toan" class="content-section hidden">
+                    <h2>💳 Thanh Toán Online</h2>
+                    
+                    <div class="payment-summary">
+                        <h3>📋 Hóa Đơn Chưa Thanh Toán</h3>
+                        <div id="danh-sach-hoa-don">
+                            <div class="invoice-card">
+                                <div class="invoice-header">
+                                    <h4>🏥 Nội khoa - BS. Nguyễn Văn Hùng</h4>
+                                    <span class="invoice-status unpaid">Chưa thanh toán</span>
+                                </div>
+                                <div class="invoice-details">
+                                    <p><strong>📅 Ngày khám:</strong> 28/08/2025</p>
+                                    <p><strong>🕘 Giờ:</strong> 09:00 - 09:30</p>
+                                    <p><strong>💰 Chi phí:</strong> <span class="price">350.000 VND</span></p>
+                                </div>
+                                <div class="invoice-actions">
+                                    <button class="button-payment" onclick="thanhToanHoaDon(1)">💳 Thanh Toán Ngay</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-methods">
+                        <h3>🏦 Phương Thức Thanh Toán</h3>
+                        <div class="payment-options">
+                            <div class="payment-method">
+                                <input type="radio" id="banking" name="payment" value="banking" checked>
+                                <label for="banking">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z'/%3E%3C/svg%3E" alt="Banking">
+                                    <span>Chuyển khoản ngân hàng</span>
+                                </label>
+                            </div>
+                            <div class="payment-method">
+                                <input type="radio" id="momo" name="payment" value="momo">
+                                <label for="momo">
+                                    <div class="momo-icon">💰</div>
+                                    <span>Ví MoMo</span>
+                                </label>
+                            </div>
+                            <div class="payment-method">
+                                <input type="radio" id="vnpay" name="payment" value="vnpay">
+                                <label for="vnpay">
+                                    <div class="vnpay-icon">🏧</div>
+                                    <span>VNPay</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LỊCH ĐÃ ĐẶT -->
+                <div id="lich-da-dat" class="content-section hidden">
+                    <h2>📋 Lịch Khám Đã Đặt</h2>
+                    <div id="danh-sach-lich">
+                        <div class="appointment-card">
+                            <h4>🏥 Nội khoa - BS. Nguyễn Văn A</h4>
+                            <p><strong>📅 Ngày:</strong> 25/08/2025</p>
+                            <p><strong>🕘 Giờ:</strong> 09:00 - 09:30</p>
+                            <p><strong>📊 Trạng thái:</strong> <span class="status-confirmed">Đã xác nhận</span></p>
+                            <p><strong>💰 Chi phí:</strong> <span class="price">350.000 VND</span></p>
+                            <p><strong>📝 Ghi chú:</strong> Đau bụng, khó tiêu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THÔNG TIN CÁ NHÂN -->
+                <div id="thong-tin-ca-nhan" class="content-section hidden">
+                    <h2>👤 Thông Tin Cá Nhân</h2>
+                    <form id="form-thong-tin">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profile-name">Họ và tên:</label>
+                                <input type="text" id="profile-name" value="Nguyễn Văn A">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-phone">Số điện thoại:</label>
+                                <input type="tel" id="profile-phone" value="0123456789">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-email">Email:</label>
+                            <input type="email" id="profile-email" value="nguyenvana@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-address">Địa chỉ:</label>
+                            <textarea id="profile-address" rows="3">123 Đường ABC, Quận XYZ, TP.HCM</textarea>
+                        </div>
+                        <button type="submit" class="button">💾 Cập Nhật Thông Tin</button>
+                    </form>
+                </div>
+
+                <!-- LỊCH SỬ KHÁM -->
+                <div id="lich-su-kham" class="content-section hidden">
+                    <h2>📊 Lịch Sử Khám Bệnh</h2>
+                    <div class="appointment-card">
+                        <h4>🏥 Nội khoa - BS. Trần Thị B</h4>
+                        <p><strong>📅 Ngày:</strong> 15/08/2025</p>
+                        <p><strong>📝 Chẩn đoán:</strong> Viêm dạ dày</p>
+                        <p><strong>✅ Kết quả:</strong> <span class="status-confirmed">Đã điều trị thành công</span></p>
+                        <p><strong>💊 Đơn thuốc:</strong> Omeprazole 20mg, Domperidone 10mg</p>
+                        <p><strong>💰 Chi phí:</strong> <span class="price">350.000 VND</span></p>
+                    </div>
+                    <div class="appointment-card">
+                        <h4>👁️ Mắt - BS. Lê Văn C</h4>
+                        <p><strong>📅 Ngày:</strong> 10/07/2025</p>
+                        <p><strong>📝 Chẩn đoán:</strong> Cận thị độ 2</p>
+                        <p><strong>✅ Kết quả:</strong> <span class="status-confirmed">Kê đơn kính cận</span></p>
+                        <p><strong>👓 Toa thuốc:</strong> Kính cận -2.0D</p>
+                        <p><strong>💰 Chi phí:</strong> <span class="price">450.000 VND</span></p>
+                    </div>
+                </div>
+
+                <!-- LIÊN HỆ -->
+                <div id="lien-he" class="content-section hidden">
+                    <h2>📞 Thông Tin Liên Hệ</h2>
+                    
+                    <div class="contact-info">
+                        <div class="contact-section">
+                            <h3>🏥 Bệnh Viện Đa Khoa ABC</h3>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <span class="icon">📍</span>
+                                    <div>
+                                        <strong>Địa chỉ:</strong>
+                                        <p>123 Đường Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh</p>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="icon">📞</span>
+                                    <div>
+                                        <strong>Điện thoại:</strong>
+                                        <p>Hotline: (028) 3822-1234</p>
+                                        <p>Cấp cứu: (028) 3822-5678</p>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="icon">✉️</span>
+                                    <div>
+                                        <strong>Email:</strong>
+                                        <p>info@benhvienabc.com</p>
+                                        <p>datlich@benhvienabc.com</p>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="icon">🕐</span>
+                                    <div>
+                                        <strong>Giờ làm việc:</strong>
+                                        <p>Thứ 2 - Thứ 7: 7:00 - 17:00</p>
+                                        <p>Chủ nhật: 8:00 - 12:00</p>
+                                        <p>Cấp cứu: 24/7</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-form-section">
+                            <h3>💬 Gửi Tin Nhắn</h3>
+                            <form id="contact-form" class="contact-form">
+                                <div class="form-group">
+                                    <label for="contact-subject">Chủ đề:</label>
+                                    <select id="contact-subject" required>
+                                        <option value="">-- Chọn chủ đề --</option>
+                                        <option value="dat-lich">Hỗ trợ đặt lịch</option>
+                                        <option value="thanh-toan">Vấn đề thanh toán</option>
+                                        <option value="dich-vu">Thông tin dịch vụ</option>
+                                        <option value="khieu-nai">Khiếu nại</option>
+                                        <option value="khac">Khác</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact-message">Tin nhắn:</label>
+                                    <textarea id="contact-message" rows="5" placeholder="Nhập nội dung tin nhắn..." required></textarea>
+                                </div>
+                                <button type="submit" class="button" onclick="guiTinNhan(event)">📧 Gửi Tin Nhắn</button>
+                            </form>
+                        </div>
+
+                        <div class="emergency-section">
+                            <h3>🚨 Trường Hợp Khẩn Cấp</h3>
+                            <div class="emergency-info">
+                                <p><strong>Gọi ngay:</strong> <a href="tel:028-3822-5678" class="emergency-number">📞 (028) 3822-5678</a></p>
+                                <p><strong>Hoặc:</strong> <a href="tel:115" class="emergency-number">🚑 115</a></p>
+                                <p class="emergency-note">⚠️ Đối với các trường hợp cấp cứu, vui lòng gọi trực tiếp hoặc đến bệnh viện ngay lập tức.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL ĐỔI LỊCH -->
+        <div id="modal-doi-lich" class="modal">
+            <div class="modal-content">
+                <h3>🔄 Đổi Lịch Khám</h3>
+                <form id="form-doi-lich">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="doi-ngay-kham">Ngày khám mới:</label>
+                            <input type="date" id="doi-ngay-kham" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="doi-gio-kham">Giờ khám mới:</label>
+                            <select id="doi-gio-kham" required>
+                                <option value="">-- Chọn giờ --</option>
+                                <option value="08:00">08:00 - 08:30</option>
+                                <option value="08:30">08:30 - 09:00</option>
+                                <option value="09:00">09:00 - 09:30</option>
+                                <option value="09:30">09:30 - 10:00</option>
+                                <option value="10:00">10:00 - 10:30</option>
+                                <option value="14:00">14:00 - 14:30</option>
+                                <option value="14:30">14:30 - 15:00</option>
+                                <option value="15:00">15:00 - 15:30</option>
+                                <option value="15:30">15:30 - 16:00</option>
+                                <option value="16:00">16:00 - 16:30</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="doi-ly-do">Lý do đổi lịch:</label>
+                        <textarea id="doi-ly-do" rows="3" placeholder="Nhập lý do đổi lịch..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="button-secondary" onclick="dongModal('modal-doi-lich')">❌ Hủy</button>
+                        <button type="submit" class="button" onclick="xacNhanDoiLich(event)">✅ Xác Nhận Đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL HỦY LỊCH -->
+        <div id="modal-huy-lich" class="modal">
+            <div class="modal-content">
+                <h3>❌ Hủy Lịch Khám</h3>
+                <div class="cancel-info">
+                    <p><strong>⚠️ Lưu ý:</strong></p>
+                    <ul>
+                        <li>Bạn có thể hủy lịch trước 24 giờ khám</li>
+                        <li>Việc hủy lịch liên tục có thể ảnh hưởng đến việc đặt lịch sau</li>
+                    </ul>
+                </div>
+                <form id="form-huy-lich">
+                    <div class="form-group">
+                        <label for="huy-ly-do">Lý do hủy lịch:</label>
+                        <textarea id="huy-ly-do" rows="4" placeholder="Vui lòng cho biết lý do hủy lịch..." required></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="button-secondary" onclick="dongModal('modal-huy-lich')">🔙 Quay Lại</button>
+                        <button type="submit" class="button-danger" onclick="xacNhanHuyLich(event)">❌ Xác Nhận Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL THANH TOÁN -->
+        <div id="modal-thanh-toan" class="modal">
+            <div class="modal-content">
+                <h3>💳 Thanh Toán Online</h3>
+                <div id="payment-details">
+                    <div class="payment-info">
+                        <h4>📋 Chi Tiết Hóa Đơn</h4>
+                        <div id="invoice-details"></div>
+                    </div>
+                    <div class="payment-method-selection">
+                        <h4>💰 Chọn Phương Thức Thanh Toán</h4>
+                        <div class="payment-options-modal">
+                            <label class="payment-option">
+                                <input type="radio" name="payment-modal" value="banking" checked>
+                                <span class="payment-label">🏦 Chuyển khoản ngân hàng</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment-modal" value="momo">
+                                <span class="payment-label">💰 Ví MoMo</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="payment-modal" value="vnpay">
+                                <span class="payment-label">🏧 VNPay</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="button-secondary" onclick="dongModal('modal-thanh-toan')">❌ Hủy</button>
+                    <button type="button" class="button-payment" onclick="xuLyThanhToan()">💳 Thanh Toán Ngay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
